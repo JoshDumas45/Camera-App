@@ -79,6 +79,7 @@
 
 
                     <ImageView
+                        android:id="@+id/mic_icon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/baseline_mic_24"
