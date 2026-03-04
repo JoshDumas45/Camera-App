@@ -6,54 +6,90 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
+    android:background="@color/black"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="50sp"
-        android:text="NanoSpectAI"
-        android:layout_centerHorizontal="true"
-        />
-
-    <Button
-        android:id="@+id/btncamera_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text"
-        android:text="Camera"
-        android:layout_centerHorizontal="true"
-        />
-
-    <View
-        android:id="@+id/space1"
-        android:layout_width="wrap_content"
-        android:layout_height="10dp"
-        android:layout_below="@+id/btncamera_id"
-        />
-
-    <Button
-        android:id="@+id/btnmic_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/space1"
-        android:text="Mic"
-        android:layout_centerHorizontal="true"
-        />
-    <View
-        android:id="@+id/space2"
-        android:layout_width="wrap_content"
-        android:layout_height="10dp"
-        android:layout_below="@+id/btnmic_id"
-        />
-    
+    <!-- Logo at Top -->
     <ImageView
-        android:id="@+id/imageview1"
+        android:id="@+id/logo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/space2"/>
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/nanospectai"
+        android:padding="28dp"
+        />
 
+    <!-- Bottom White Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="650dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-20dp"
+        app:cardCornerRadius="28dp"
+        android:backgroundTint="@color/white">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
+
+            <!-- Large Blank Image Area -->
+            <ImageView
+                android:id="@+id/imageview1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/button_row"
+                android:background="#EEEEEE"
+                android:scaleType="centerCrop"/>
+
+            <!-- Button Row -->
+            <LinearLayout
+                android:id="@+id/button_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:paddingTop="15dp"
+                android:paddingBottom="20dp"
+                android:gravity="center_vertical">
+
+                <!-- Camera Button (Left) -->
+                <Button
+                    android:id="@+id/btncamera_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Camera"/>
+
+                <!-- Mic Button (Right) -->
+                <FrameLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="20dp">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnmic_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/round_button"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null"
+                        android:text=""/>
+
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/baseline_mic_24"
+                        android:scaleType="centerInside"/>
+                </FrameLayout>
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
