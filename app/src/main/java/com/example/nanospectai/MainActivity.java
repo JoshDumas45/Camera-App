@@ -1,6 +1,7 @@
 package com.example.nanospectai;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         btnpicture= findViewById(R.id.btncamera_id);
         imageView= findViewById(R.id.imageview1);
         AppCompatButton btnMic = findViewById(R.id.btnmic_id);
