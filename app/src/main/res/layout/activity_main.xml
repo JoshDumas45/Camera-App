@@ -55,14 +55,18 @@
                 android:gravity="center_vertical">
 
                 <!-- Camera Button (Left) -->
+
+                <!-- Mic Button (Right) -->
+
                 <Button
                     android:id="@+id/btncamera_id"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Camera"/>
+                    android:backgroundTint="@color/blue"
+                    android:textColor="@color/white"
+                    android:text="Camera" />
 
-                <!-- Mic Button (Right) -->
                 <FrameLayout
                     android:layout_width="50dp"
                     android:layout_height="50dp"
