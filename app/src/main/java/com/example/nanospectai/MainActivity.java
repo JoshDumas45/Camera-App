@@ -17,6 +17,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.FileProvider;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileOutputStream;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -68,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if (micActive) {
                     // Mic active: red background and new icon
-                    btnMic.setBackgroundTintList(getColorStateList(R.color.red)); // make sure you have red in colors.xml
-                    micIcon.setImageResource(R.drawable.baseline_mic_off_24); // replace with your drawable
+                    btnMic.setBackgroundTintList(getColorStateList(R.color.red));
+                    micIcon.setImageResource(R.drawable.baseline_mic_off_24);
                 } else {
                     // Mic inactive: original background and original icon
-                    btnMic.setBackgroundTintList(getColorStateList(R.color.green)); // replace with your original color
+                    btnMic.setBackgroundTintList(getColorStateList(R.color.green));
                     micIcon.setImageResource(R.drawable.baseline_mic_24);
                 }
             }
@@ -93,13 +94,51 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
         if(requestCode == REQUEST_CODE && resultCode == RESULT_OK)
         {
-            imageView.setImageURI(imageUri);
+            try {
+
+                // Load original image
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                        this.getContentResolver(),
+                        imageUri
+                );
+
+                // Resize image
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 640, 480 , true);
+
+                // Display resized image immediately
+                imageView.setImageBitmap(resizedBitmap);
+
+                // Send resized image via bluetooth
+                sendImageBluetooth(imageUri);
+
+                // Save resized image (overwrite original)
+                File file = new File(imageUri.getPath());
+                FileOutputStream out = new FileOutputStream(file);
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.flush();
+                out.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         else{
             Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
         }
+
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void sendImageBluetooth(Uri uri) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/jpeg");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        startActivity(Intent.createChooser(intent, "Send Image"));
     }
 }
