@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import android.media.ExifInterface;
+import android.graphics.Matrix;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 22;
@@ -109,27 +111,29 @@ public class MainActivity extends AppCompatActivity {
             }
             try {
 
-                // Load original image
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(
                         this.getContentResolver(),
                         imageUri
                 );
 
-                // Resize image
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 640, 480 , true);
+                bitmap = fixRotation(bitmap, currentPhotoFile);
 
-                // Display resized image immediately
+                int width = bitmap.getWidth() / 4;
+                int height = bitmap.getHeight() / 4;
+
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+
+                // Display
                 imageView.setImageBitmap(resizedBitmap);
 
-                // Send resized image via bluetooth
-                sendImageBluetooth(imageUri);
-
-                // Save resized image (overwrite original)
-                File file = currentPhotoFile;
-                FileOutputStream out = new FileOutputStream(file);
-                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                // Save
+                FileOutputStream out = new FileOutputStream(currentPhotoFile);
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                 out.flush();
                 out.close();
+
+                // Send
+                sendImageBluetooth(imageUri);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -140,6 +144,40 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private Bitmap fixRotation(Bitmap bitmap, File file) {
+        try {
+            ExifInterface exif = new ExifInterface(file.getAbsolutePath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+            );
+
+            Matrix matrix = new Matrix();
+
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90)
+                matrix.postRotate(90);
+            else if (orientation == ExifInterface.ORIENTATION_ROTATE_180)
+                matrix.postRotate(180);
+            else if (orientation == ExifInterface.ORIENTATION_ROTATE_270)
+                matrix.postRotate(270);
+
+            return Bitmap.createBitmap(
+                    bitmap,
+                    0,
+                    0,
+                    bitmap.getWidth(),
+                    bitmap.getHeight(),
+                    matrix,
+                    true
+            );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
     }
 
     private void sendImageBluetooth(Uri uri) {
