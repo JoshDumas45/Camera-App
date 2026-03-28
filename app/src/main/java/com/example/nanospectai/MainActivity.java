@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnpicture;
     ImageView imageView, micIcon;
     boolean micActive = false;
+    File currentPhotoFile;
     Uri imageUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 File photoFile = null;
                 try{
                     photoFile = createImageFile();
+                    currentPhotoFile = photoFile;
                 } catch(IOException e){
                     e.printStackTrace();
                 }
@@ -56,8 +58,13 @@ public class MainActivity extends AppCompatActivity {
                             getPackageName() + ".provider",
                             photoFile
                     );
+
                     cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                    startActivityForResult(cameraIntent,REQUEST_CODE);
+
+                    cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    startActivityForResult(cameraIntent, REQUEST_CODE);
                 }
             }
         });
@@ -80,16 +87,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private File createImageFile() throws IOException {
-        String fileName = "photo_" + System.currentTimeMillis();
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES
-        );
-        File image = File.createTempFile(
-                fileName,
-                ".jpg",
-                storageDir
-        );
-        return image;
+
+        File storageDir = new File(getExternalFilesDir(null), "NanoSpectAI_Images");
+
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
+
+        String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+
+        return new File(storageDir, fileName);
     }
 
     @Override
@@ -97,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
         if(requestCode == REQUEST_CODE && resultCode == RESULT_OK)
         {
+            if (currentPhotoFile != null) {
+                Toast.makeText(this, "Saved: " + currentPhotoFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            }
             try {
 
                 // Load original image
@@ -115,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 sendImageBluetooth(imageUri);
 
                 // Save resized image (overwrite original)
-                File file = new File(imageUri.getPath());
+                File file = currentPhotoFile;
                 FileOutputStream out = new FileOutputStream(file);
                 resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
                 out.flush();
