@@ -96,9 +96,15 @@ public class MainActivity extends AppCompatActivity {
             storageDir.mkdirs();
         }
 
-        String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+        int imageNumber = 1;
+        File imageFile;
+        do {
+            String fileName = "image_" + imageNumber + ".jpg";
+            imageFile = new File(storageDir, fileName);
+            imageNumber++;
+        } while (imageFile.exists());
 
-        return new File(storageDir, fileName);
+        return imageFile;
     }
 
     @Override
