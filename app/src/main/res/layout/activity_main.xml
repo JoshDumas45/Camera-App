@@ -9,7 +9,7 @@
     android:background="@color/black"
     tools:context=".MainActivity">
 
-    <!-- Logo at Top -->
+    <!--  App Logo at Top -->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             android:layout_height="match_parent"
             android:padding="20dp">
 
-            <!-- Large Blank Image Area -->
+            <!-- Image Preview Area -->
             <ImageView
                 android:id="@+id/imageview1"
                 android:layout_width="match_parent"
@@ -54,10 +54,7 @@
                 android:paddingBottom="20dp"
                 android:gravity="center_vertical">
 
-                <!-- Camera Button (Left) -->
-
-                <!-- Mic Button (Right) -->
-
+                <!-- Camera Button -->
                 <Button
                     android:id="@+id/btncamera_id"
                     android:layout_width="0dp"
@@ -67,13 +64,14 @@
                     android:textColor="@color/white"
                     android:text="Camera" />
 
+                <!-- Delete Button -->
                 <FrameLayout
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="20dp">
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btnmic_id"
+                        android:id="@+id/btndelete_id"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:background="@drawable/round_button"
@@ -81,12 +79,11 @@
                         android:stateListAnimator="@null"
                         android:text=""/>
 
-
                     <ImageView
-                        android:id="@+id/mic_icon"
+                        android:id="@+id/delete_icon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/baseline_mic_24"
+                        android:src="@drawable/baseline_delete_24"
                         android:scaleType="centerInside"/>
                 </FrameLayout>
 
