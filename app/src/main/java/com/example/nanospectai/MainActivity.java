@@ -13,6 +13,7 @@ import android.widget.Toast;
 import android.net.Uri;
 import android.os.Environment;
 
+import androidx.appcompat.app.AppCompatCallback;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.FileProvider;
 import java.io.File;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         btnpicture= findViewById(R.id.btncamera_id);
         imageView= findViewById(R.id.imageview1);
         AppCompatButton btnDelete = findViewById(R.id.btndelete_id);
+        AppCompatButton btnStop = findViewById(R.id.btnstop_id);
 
         // Open camera when camera button is tapped
         btnpicture.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +93,22 @@ public class MainActivity extends AppCompatActivity {
                         .setMessage("Are you sure you want to delete all images?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             deleteAllImages();
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
+            }
+        });
+
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new androidx.appcompat.app.AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Send STOP")
+                        .setMessage("Are you sure you want to send STOP?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            sendStopFile();
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> {
                             dialog.dismiss();
@@ -226,5 +244,38 @@ public class MainActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         startActivity(Intent.createChooser(intent, "Send Image"));
+    }
+
+    private void sendStopFile() {
+        try {
+            File storageDir = new File(getExternalFilesDir(null), "NanoSpectAI_Images");
+
+            if (!storageDir.exists()) {
+                storageDir.mkdirs();
+            }
+
+            File stopFile = new File(storageDir, "STOP.txt");
+
+            FileOutputStream fos = new FileOutputStream(stopFile);
+            fos.write("STOP".getBytes());
+            fos.flush();
+            fos.close();
+
+            Uri uri = FileProvider.getUriForFile(
+                    this,
+                    getPackageName() + ".provider",
+                    stopFile
+            );
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            startActivity(Intent.createChooser(intent, "Send STOP"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
